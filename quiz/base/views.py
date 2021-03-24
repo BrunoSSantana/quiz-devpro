@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from quiz.base.models import Pergunta
 
 # Create your views here.
 
@@ -9,7 +10,8 @@ def home(request):
 
 
 def perguntas(request, indice):
-    contexto = {'indice_da_questao': indice}
+    pergunta = Pergunta.objects.filter(disponivel=True).order_by('id')[indice - 1]
+    contexto = {'indice_da_questao': indice, 'pergunta': pergunta}
     return  render(request, 'base/game.html', context=contexto)
 
 

@@ -13,3 +13,7 @@ class Pergunta(models.Model):
         (2, 'C'),
         (3, 'D'),
     ])
+
+
+def __str__(self):
+    return self.enunciado

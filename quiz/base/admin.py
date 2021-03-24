@@ -6,4 +6,4 @@ from quiz.base.models import Pergunta
 
 @admin.register(Pergunta)
 class PerguntaAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'enunciado', 'disponivel')
