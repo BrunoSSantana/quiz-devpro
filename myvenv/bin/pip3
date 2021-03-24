@@ -1,4 +1,4 @@
-#!/home/bruno/Projects/quiz-devpro/myvenv/bin/python3
+#!/home/bruno/Projects/quiz-devpro/myvenv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
