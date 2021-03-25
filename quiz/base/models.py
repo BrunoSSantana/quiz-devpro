@@ -9,6 +9,10 @@ class Aluno(models.Model):
     email = models.EmailField(unique=True)
     criado_em = models.DateField(auto_now_add=True)
 
+    def __str__(self):
+        return self.email
+    
+
 
 class Pergunta(models.Model):
     enunciado = models.TextField()
