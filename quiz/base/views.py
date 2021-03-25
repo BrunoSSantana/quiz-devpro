@@ -12,6 +12,9 @@ def home(request):
         if formulario.is_valid():
             aluno = formulario.save()
             return redirect('/perguntas/1')
+        else:
+            contexto = {'formulario': formulario}
+            return  render(request, 'base/home.html', contexto)
     return  render(request, 'base/home.html')
 
 
