@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from quiz.base.models import Pergunta, Aluno
+from quiz.base.models import Pergunta, Aluno, Resposta
 from quiz.base.forms import AlunoForm
 
 # Create your views here.
@@ -27,6 +27,7 @@ def home(request):
     return  render(request, 'base/home.html')
 
 
+PONTUACAO_MAXIMA = 1000
 def perguntas(request, indice):
     try:
         aluno_id = request.session['aluno_id']
@@ -39,14 +40,13 @@ def perguntas(request, indice):
             return redirect('/classificacao')
         else:
             contexto = {'indice_da_questao': indice, 'pergunta': pergunta}
-
             if request.method == 'POST':
                 resposta_indice = int(request.POST['resposta_indice'])
                 if resposta_indice == pergunta.alternativa_correta:
                     # Armazenar dados da resposta
+                    Resposta(aluno_id=aluno_id, pergunta=pergunta, pontos=PONTUACAO_MAXIMA).save()
                     return redirect(f'/perguntas/{indice + 1}')
-                contexto['resposta_indice'] = resposta_indice
-                    
+                contexto['resposta_indice'] = resposta_indice       
             return  render(request, 'base/game.html', context=contexto)
 
 
