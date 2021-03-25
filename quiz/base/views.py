@@ -1,11 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from quiz.base.models import Pergunta
+from quiz.base.forms import AlunoForm
 
 # Create your views here.
 
 
 def home(request):
+    if request.method == 'POST':
+        formulario = AlunoForm(request.POST)
+        if formulario.is_valid():
+            aluno = formulario.save()
+            return redirect('/perguntas/1')
     return  render(request, 'base/home.html')
 
 
