@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from quiz.base.models import Pergunta, Aluno, Resposta
 from quiz.base.forms import AlunoForm
 from django.utils.timezone import now
+from django.db.models.aggregates import Sum
 
 # Create your views here.
 
@@ -60,4 +61,22 @@ def perguntas(request, indice):
 
 
 def classificacao(request):
-    return render(request, 'base/classificacao.html')
+    try:
+        aluno_id = request.session['aluno_id']
+    except KeyError:
+        return redirect('/')
+    else:
+        pontos_dct = Resposta.objects.filter(aluno_id=aluno_id).aggregate(Sum('pontos'))
+        pontuacao_do_aluno = pontos_dct['pontos__sum']
+
+        numero_de_alunos_com_maior_pontuacao = Resposta.objects.values('aluno').annotate(Sum('pontos')).filter(pontos__sum__gt = pontuacao_do_aluno).count()
+        colocacao_do_aluno = numero_de_alunos_com_maior_pontuacao + 1
+
+        primeiros_alunos_da_classificacao = list(Resposta.objects.values('aluno', 'aluno__nome').annotate(Sum('pontos')).order_by('-pontos__sum')[:5])
+        
+        contexto = {
+            'pontuacao_do_aluno': pontuacao_do_aluno,
+            'colocacao_do_aluno' :colocacao_do_aluno,
+            'primeiros_alunos_da_classificacao': primeiros_alunos_da_classificacao
+            }
+        return render(request, 'base/classificacao.html', contexto)
